@@ -40,7 +40,6 @@ function Row({ state, onRetry, emptyTitle, errorTitle, skeleton, children }) {
 export default function Home() {
   const { user } = useApp();
   const [attempt, setAttempt] = useState(0);
-  const [allSoon, setAllSoon] = useState(false);
   const retry = () => setAttempt((n) => n + 1);
 
   const nowPlaying = useAsync(() => api.getNowPlaying(), [attempt]);
@@ -105,11 +104,9 @@ export default function Home() {
         <SectionHead
           title="Coming soon..."
           action={
-            (comingSoon.data?.length ?? 0) > 1 && (
-              <button type="button" aria-expanded={allSoon} onClick={() => setAllSoon((v) => !v)} className={SEE_ALL}>
-                {allSoon ? 'Show less' : 'See all'}
-              </button>
-            )
+            <Link to="/sessions" className={SEE_ALL}>
+              See all
+            </Link>
           }
         />
         <div className="mt-[24.3px]">
@@ -122,23 +119,13 @@ export default function Home() {
               <Skeleton key={i} className="h-[160px] w-[470px] shrink-0 rounded-[20px]" />
             ))}
           >
-            {allSoon ? (
-              <ul className="flex flex-wrap gap-5">
-                {comingSoon.data?.map((movie) => (
-                  <li key={movie.slug}>
-                    <ComingSoonCard movie={movie} />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <ScrollRow label="Films coming soon">
-                {comingSoon.data?.map((movie) => (
-                  <div role="listitem" key={movie.slug} className="shrink-0">
-                    <ComingSoonCard movie={movie} />
-                  </div>
-                ))}
-              </ScrollRow>
-            )}
+            <ScrollRow label="Films coming soon">
+              {comingSoon.data?.map((movie) => (
+                <div role="listitem" key={movie.slug} className="shrink-0">
+                  <ComingSoonCard movie={movie} />
+                </div>
+              ))}
+            </ScrollRow>
           </Row>
         </div>
       </section>
